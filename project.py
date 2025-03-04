@@ -4,8 +4,8 @@ import os
 
 
 # lowk might hard code these create table queries (source: homework 2 solutions)
-query_map = dict()
-query_map["users"] = """CREATE TABLE Users (
+create_table_query_map = dict()
+create_table_query_map["users"] = """CREATE TABLE Users (
     uid INT,
     email TEXT NOT NULL,
     joined_date DATE NOT NULL,
@@ -19,7 +19,7 @@ query_map["users"] = """CREATE TABLE Users (
 );
 """
 
-query_map["producers"] = """CREATE TABLE Producers (
+create_table_query_map["producers"] = """CREATE TABLE Producers (
     uid INT,
     bio TEXT,
     company TEXT,
@@ -29,7 +29,7 @@ query_map["producers"] = """CREATE TABLE Producers (
 """
 
 
-query_map["viewers"] = """CREATE TABLE Viewers (
+create_table_query_map["viewers"] = """CREATE TABLE Viewers (
     uid INT,
     subscription ENUM('free', 'monthly', 'yearly'),
     first_name TEXT NOT NULL,
@@ -38,7 +38,7 @@ query_map["viewers"] = """CREATE TABLE Viewers (
     FOREIGN KEY (uid) REFERENCES Users(uid) ON DELETE CASCADE
 );
 """
-query_map["releases"] = """CREATE TABLE Releases (
+create_table_query_map["releases"] = """CREATE TABLE Releases (
     rid INT,
     producer_uid INT NOT NULL,
     title TEXT NOT NULL,
@@ -49,7 +49,7 @@ query_map["releases"] = """CREATE TABLE Releases (
 );
 """
 
-query_map["movies"] = """CREATE TABLE Movies (
+create_table_query_map["movies"] = """CREATE TABLE Movies (
     rid INT,
     website_url TEXT,
     PRIMARY KEY (rid),
@@ -57,14 +57,14 @@ query_map["movies"] = """CREATE TABLE Movies (
 );
 """
 
-query_map["series"] = """CREATE TABLE Series (
+create_table_query_map["series"] = """CREATE TABLE Series (
     rid INT,
     introduction TEXT,
     PRIMARY KEY (rid),
     FOREIGN KEY (rid) REFERENCES Releases(rid) ON DELETE CASCADE
 );
 """
-query_map["videos"] = """CREATE TABLE Videos (
+create_table_query_map["videos"] = """CREATE TABLE Videos (
     rid INT,
     ep_num INT NOT NULL,
     title TEXT NOT NULL,
@@ -73,7 +73,7 @@ query_map["videos"] = """CREATE TABLE Videos (
     FOREIGN KEY (rid) REFERENCES Releases(rid) ON DELETE CASCADE
 );
 """
-query_map["sessions"] = """CREATE TABLE Sessions (
+create_table_query_map["sessions"] = """CREATE TABLE Sessions (
     sid INT,
     uid INT NOT NULL,
     rid INT NOT NULL,
@@ -88,7 +88,7 @@ query_map["sessions"] = """CREATE TABLE Sessions (
 );
 """
 
-query_map["reviews"] = """CREATE TABLE Reviews (
+create_table_query_map["reviews"] = """CREATE TABLE Reviews (
     rvid INT,
     uid INT NOT NULL,
     rid INT NOT NULL,
@@ -113,19 +113,9 @@ table_order = [
         "sessions",
         "reviews"
     ]
-# db = mysql.connector.connect(
-#     host = "localhost",
-#     user = "test",
-#     password = "password",
-#     database = "cs122a"
-# )
-
-# cursor = db.cursor()
-
-# cursor.execute("CREATE TABLE ")
-# cursor.execute("CREATE DATABASE IF NOT EXISTS cs122a")
 
 def connect_to_server():
+    """Connect to MYSQL Server"""
     try:
         connection = mysql.connector.connect(
             user='test',
@@ -169,6 +159,44 @@ def connect_to_cs122a():
         print(f"Error: {err}")
         return None
 
+def load_data(folder_name):
+    """Load data into 122A DB"""
+    connection = connect_to_cs122a()
+    if not connection:
+        print("Failed to connect to cs122a database.")
+        return
+
+    cursor = connection.cursor()
+
+    # Disable foreign key checks to allow dropping tables
+    cursor.execute("SET FOREIGN_KEY_CHECKS = 0;")
+    # Create each table
+    for table_name in table_order:
+
+        # Delete existing tables 
+        cursor.execute(f"DROP TABLE IF EXISTS {table_name}")
+        print(f"Deleted {table_name}")
+
+        #Create new tables
+        cursor.execute(create_table_query_map[table_name])
+
+        print(f"Created {table_name} table")
+
+        file_path = os.path.join(folder_name, table_name) + ".csv"
+
+        with open(file_path, 'r') as file:
+            # first line is always columns, subsequent rows = data to input
+            columns = file.readline()
+            
+            for line in file:
+                values = line.strip().split(",")
+                query = f"INSERT INTO {table_name} VALUES ({','.join(['%s'] * len(values))})"
+                cursor.execute(query, values)
+    connection.commit()
+    print("Data import successful.")
+    cursor.close()
+    connection.close()
+
 def main():
     if len(sys.argv) < 2:
         print("No function specified.")
@@ -191,68 +219,6 @@ def main():
     # Add other commands similarly
     else:
         print("Unknown function.")
-
-
-
-
-def load_data(folder_name):
-    connection = connect_to_cs122a()
-    if not connection:
-        print("Failed to connect to cs122a database.")
-        return
-
-    cursor = connection.cursor()
-
-    # Delete existing tables and recreate them
-    # Execute the provided DDLs
-    # For example:
-    # cursor.execute("DROP TABLE IF EXISTS table_name")
-    # cursor.execute("""
-    #     CREATE TABLE table_name (
-    #         column1 datatype,
-    #         column2 datatype,
-    #         ...
-    #     )
-    # """)
-
-    for table_name in table_order:
-        cursor.execute(f"DROP TABLE IF EXISTS {table_name}")
-        cursor.execute(query_map[table_name])
-
-        print(f"Created {table_name} table")
-
-
-    # Load CSV files into tables
-    # for filename in os.listdir(folder_name):
-    #     table_name = filename.split('.')[0]
-    #     print("TABLE NAME: ", table_name)
-    #     file_path = os.path.join(folder_name, filename)
-    #     print(f"Loading data from {file_path} into table {table_name}.")
-    #     with open(file_path, 'r') as file:
-
-    #         # Delete already existing tables
-    #         # cursor.execute(f"DROP TABLE IF EXISTS {table_name}")
-
-    #         column_names = file.readline().strip("\n").split(",")
-    #         print("Columns: ", column_names)
-
-    #         # Create tables
-    #         cursor.execute(query_map[table_name])
-
-    #         # cursor.execute(f"CREATE TABLE IF NOT EXISTS {table_name} ({', '.join([f'{col} VARCHAR(255)' for col in column_names])});")
-
-    #         # print("CREATED TABLE: ", table_name)
-    #         # for line in file:
-    #         #     values = line.strip().split(',')
-    #         #     print(values)
-    #         #     # Use prepared statements for insertion
-    #         #     query = f"INSERT INTO {table_name} VALUES ({','.join(['%s'] * len(values))})"
-    #         #     cursor.execute(query, values)
-
-    # connection.commit()
-    print("Data import successful.")
-    cursor.close()
-    connection.close()
 
 if __name__ == "__main__":
     main()
