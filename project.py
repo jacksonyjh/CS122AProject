@@ -2,6 +2,7 @@ import mysql.connector
 import sys
 import os
 from create_table_query import create_table_query_map
+from insert import insert_viewer
 
 
 table_order = [
@@ -116,8 +117,8 @@ def main():
     if function_name == "import":
         folder_name = args[0]
         load_data(folder_name)
-    # elif function_name == "insertViewer":
-    #     insert_viewer(*args)
+    elif function_name == "insertViewer":
+        insert_viewer(*args)
     # Add other commands similarly
     else:
         print("Unknown function.")
