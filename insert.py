@@ -1,5 +1,8 @@
+import db_utils
+import mysql.connector
+
 def insert_viewer(*args):
-    connection = connect_to_cs122a()
+    connection = db_utils.connect_to_cs122a()
     if not connection:
         print("Failed to connect to cs122a database.")
         return
@@ -13,16 +16,34 @@ def insert_viewer(*args):
     city = args[4]
     state = args[5]
     zipcode = args[6]
-    genre = args[7]
+    genres = args[7]
     joined_date = args[8]
     first_name = args[9]
     last_name = args[10]
     subscription = args[11]
 
-    query = """INSERT INTO viewers VALUES 
-    (uid, email, nickname, street, city, state, 
-    zipcode, genre, joined_date, first_name, last_name, subscription)"""
+    try:
 
-    cursor.execute(query)
+        users_query = """INSERT INTO users VALUES 
+        (%s, %s, %s, %s, %s, %s, %s, %s, %s)"""
+
+        viewers_query = """INSERT INTO viewers VALUES 
+        (%s, %s, %s, %s)"""
+
+
+        cursor.execute(users_query, (uid, email, joined_date, nickname, street, city, state, zipcode, genres))
+        print("User added")
+        cursor.execute(viewers_query, (uid, subscription, first_name, last_name))
+        print("Viewer added")
+
+    except mysql.connector.IntegrityError as e:
+        print("Error: ", e)
+        print("Failed to add user, user with this ID already exists")
+
+
+    connection.commit()
+    cursor.close()
+    connection.close()
+    
     
     
