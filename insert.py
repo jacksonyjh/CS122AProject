@@ -1,4 +1,11 @@
 def insert_viewer(*args):
+    connection = connect_to_cs122a()
+    if not connection:
+        print("Failed to connect to cs122a database.")
+        return
+
+    cursor = connection.cursor()
+
     uid = args[0]
     email = args[1]
     nickname = args[2]
@@ -12,4 +19,10 @@ def insert_viewer(*args):
     last_name = args[10]
     subscription = args[11]
 
-    return
+    query = """INSERT INTO viewers VALUES 
+    (uid, email, nickname, street, city, state, 
+    zipcode, genre, joined_date, first_name, last_name, subscription)"""
+
+    cursor.execute(query)
+    
+    
