@@ -23,43 +23,37 @@ def insert_viewer(*args):
     last_name = args[10]
     subscription = args[11]
 
+    # add user only if it doesn't already exist
     try:
-        users_query = """INSERT INTO users VALUES 
-        (%s, %s, %s, %s, %s, %s, %s, %s, %s)"""
+        users_query = """INSERT INTO users VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"""
+        viewers_query = """INSERT INTO viewers VALUES (%s, %s, %s, %s)"""
         cursor.execute(users_query, (uid, email, joined_date, nickname, street, city, state, zipcode, genres))
+        cursor.execute(viewers_query, (uid, subscription, first_name, last_name))
+        
+    
         print("User added")
+        print("Viewer added")
     
     except mysql.connector.IntegrityError as e:
-        print("Error: ", e)
-        print("Failed to add user, user with this ID already exists")
+        print("Fail: Duplicate ID for Users/Viewers")
 
 
-    try:
-        
-        nickname_and_email_query = """SELECT nickname, email FROM Users WHERE uid = (%s)"""
-        cursor.execute(nickname_and_email_query, (uid,))
-        user_nickname, user_email = cursor.fetchone()
 
-
+    # try:
 
         # I ASKED ON ED WAITING ON RESPONSE
         #(if they have same uid on both Users and Viewers,
         # but different names, i feel like the insert query should fail (?))
-        if (user_nickname != nickname or user_email != email):
-            raise ValueError("Error: User already exists with different name")
 
-        viewers_query = """INSERT INTO viewers VALUES 
-        (%s, %s, %s, %s)"""
-        cursor.execute(viewers_query, (uid, subscription, first_name, last_name))
-        print("Viewer added")
+        # HII UPDATE (ill finish this later)
 
-    except mysql.connector.IntegrityError as e:
-        print("Error: ", e)
-        print("Failed to add viewer, viewer with this ID already exists")
+        # This is from the TA
+        # If the uid already exists in the users table, you are supposed to return Fail in this case.
+        # We are assuming that we are creating both a new User and new Viewer;
+        # if the User and/or Viewer already exists, you should return Fail.
 
-    except ValueError as e:
-        print("Error: ", e)
-        print("Failed to add to viewer") # TEMPORARY
+        # user already exists
+
     connection.commit()
     cursor.close()
     connection.close()
