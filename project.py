@@ -2,8 +2,10 @@ import sys
 import os
 import db_utils
 from create_table_query import create_table_query_map
-from insert import insert_viewer
-from add_genre import add_genre
+from inserts import insert_viewer, add_genre
+from deletes import delete_viewer
+
+
 
 
 table_order = [
@@ -81,6 +83,12 @@ def main():
         uid = args[0]
         genre = args[1]
         add_genre(uid, genre)
+
+    elif function_name == "deleteViewer":
+        uid = args[0]
+        delete_viewer(uid)
+        
+
 
 
     # Add other commands similarly
