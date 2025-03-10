@@ -44,7 +44,7 @@ def insert_viewer(*args):
 
         # I ASKED ON ED WAITING ON RESPONSE
         #(if they have same uid on both Users and Viewers,
-        # but different names, the insert query should fail (?))
+        # but different names, i feel like the insert query should fail (?))
         if (user_nickname != nickname or user_email != email):
             print("Error: User already exists with different name")
             connection.commit()

@@ -3,6 +3,7 @@ import os
 import db_utils
 from create_table_query import create_table_query_map
 from insert import insert_viewer
+from add_genre import add_genre
 
 
 table_order = [
@@ -75,6 +76,12 @@ def main():
         load_data(folder_name)
     elif function_name == "insertViewer":
         insert_viewer(*args)
+
+    elif function_name == "addGenre":
+        uid = args[0]
+        add_genre(uid, args[1:])
+
+
     # Add other commands similarly
     else:
         print("Unknown function.")
