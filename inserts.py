@@ -48,10 +48,6 @@ def insert_viewer(*args):
         if (user_nickname != nickname or user_email != email):
             raise ValueError("Error: User already exists with different name")
 
-
-
-
-
         viewers_query = """INSERT INTO viewers VALUES 
         (%s, %s, %s, %s)"""
         cursor.execute(viewers_query, (uid, subscription, first_name, last_name))
@@ -105,6 +101,27 @@ def add_genre(uid, genre):
     except ValueError as e:
         print(e)
 
+    connection.commit()
+    cursor.close()
+    connection.close()
+
+
+def insert_movie(rid, url):
+    """Inserts Movie into Movies Table"""
+    connection = db_utils.connect_to_cs122a()
+    if not connection:
+        print("Failed to connect to cs122a database.")
+        return
+
+    cursor = connection.cursor()
+
+    try:
+        insert_movie_query = "INSERT INTO movies VALUES (%s, %s)"
+        cursor.execute(insert_movie_query, (rid, url,))
+        print(f"added rid {rid}")
+    except mysql.connector.IntegrityError as e:
+        print(f"rid {rid} already exists, failed to insert")
+    
     connection.commit()
     cursor.close()
     connection.close()

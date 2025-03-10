@@ -2,7 +2,7 @@ import sys
 import os
 import db_utils
 from create_table_query import create_table_query_map
-from inserts import insert_viewer, add_genre
+from inserts import insert_viewer, add_genre, insert_movie
 from deletes import delete_viewer
 
 
@@ -87,6 +87,12 @@ def main():
     elif function_name == "deleteViewer":
         uid = args[0]
         delete_viewer(uid)
+    
+    elif function_name == "insertMovie":
+        rid = args[0]
+        url = args[1]
+        insert_movie(rid, url)
+
         
 
 
