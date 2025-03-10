@@ -79,7 +79,8 @@ def main():
 
     elif function_name == "addGenre":
         uid = args[0]
-        add_genre(uid, args[1:])
+        genre = args[1]
+        add_genre(uid, genre)
 
 
     # Add other commands similarly

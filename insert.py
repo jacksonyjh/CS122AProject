@@ -46,11 +46,8 @@ def insert_viewer(*args):
         #(if they have same uid on both Users and Viewers,
         # but different names, i feel like the insert query should fail (?))
         if (user_nickname != nickname or user_email != email):
-            print("Error: User already exists with different name")
-            connection.commit()
-            cursor.close()
-            connection.close()
-            return
+            raise ValueError("Error: User already exists with different name")
+
 
 
 
@@ -64,6 +61,9 @@ def insert_viewer(*args):
         print("Error: ", e)
         print("Failed to add viewer, viewer with this ID already exists")
 
+    except ValueError as e:
+        print("Error: ", e)
+        print("Failed to add to viewer") # TEMPORARY
     connection.commit()
     cursor.close()
     connection.close()
