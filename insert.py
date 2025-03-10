@@ -2,6 +2,7 @@ import db_utils
 import mysql.connector
 
 def insert_viewer(*args):
+    """Inserts a User and Viewer into their respective tables"""
     connection = db_utils.connect_to_cs122a()
     if not connection:
         print("Failed to connect to cs122a database.")
@@ -23,23 +24,45 @@ def insert_viewer(*args):
     subscription = args[11]
 
     try:
-
         users_query = """INSERT INTO users VALUES 
         (%s, %s, %s, %s, %s, %s, %s, %s, %s)"""
+        cursor.execute(users_query, (uid, email, joined_date, nickname, street, city, state, zipcode, genres))
+        print("User added")
+    
+    except mysql.connector.IntegrityError as e:
+        print("Error: ", e)
+        print("Failed to add user, user with this ID already exists")
+
+
+    try:
+        
+        nickname_and_email_query = """SELECT nickname, email FROM Users WHERE uid = (%s)"""
+        cursor.execute(nickname_and_email_query, (uid,))
+        user_nickname, user_email = cursor.fetchone()
+
+
+
+        # I ASKED ON ED WAITING ON RESPONSE
+        #(if they have same uid on both Users and Viewers,
+        # but different names, the insert query should fail (?))
+        if (user_nickname != nickname or user_email != email):
+            print("Error: User already exists with different name")
+            connection.commit()
+            cursor.close()
+            connection.close()
+            return
+
+
+
 
         viewers_query = """INSERT INTO viewers VALUES 
         (%s, %s, %s, %s)"""
-
-
-        cursor.execute(users_query, (uid, email, joined_date, nickname, street, city, state, zipcode, genres))
-        print("User added")
         cursor.execute(viewers_query, (uid, subscription, first_name, last_name))
         print("Viewer added")
 
     except mysql.connector.IntegrityError as e:
         print("Error: ", e)
-        print("Failed to add user, user with this ID already exists")
-
+        print("Failed to add viewer, viewer with this ID already exists")
 
     connection.commit()
     cursor.close()
