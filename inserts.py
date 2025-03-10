@@ -151,7 +151,7 @@ def insert_session(*args):
         cursor.execute(create_sesh_query, (sid, uid, rid, ep_num, init_at, leave_at, quality, device,))
         
         print(f"sid {sid} created")
-        
+
     except mysql.connector.IntegrityError as e:
         print("Duplicate SID provided. Fail")
 
@@ -161,6 +161,22 @@ def insert_session(*args):
 
 
     
-    
+def update_release(rid, title):
+    """Updates the Title of a Release"""
+    connection = db_utils.connect_to_cs122a()
+    if not connection:
+        print("Failed to connect to cs122a database.")
+        return
 
-    
+    cursor = connection.cursor()
+
+    update_release_query = "UPDATE releases SET title = %s WHERE rid = %s"
+    cursor.execute(update_release_query, (title, rid,))
+
+    print(f"rid {rid} title updated")
+
+    connection.commit()
+    cursor.close()
+    connection.close()
+
+    return

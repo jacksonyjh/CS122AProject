@@ -2,7 +2,7 @@ import sys
 import os
 import db_utils
 from create_table_query import create_table_query_map
-from inserts import insert_viewer, add_genre, insert_movie, insert_session
+from inserts import insert_viewer, add_genre, insert_movie, insert_session, update_release
 from deletes import delete_viewer
 
 
@@ -95,6 +95,11 @@ def main():
 
     elif function_name == "insertSession":
         insert_session(*args)
+
+    elif function_name == "updateRelease":
+        rid = args[0]
+        title = args[1]
+        update_release(rid, title)
 
     # Add other commands similarly
     else:
