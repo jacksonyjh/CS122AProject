@@ -2,7 +2,7 @@ import sys
 import os
 import db_utils
 from create_table_query import create_table_query_map
-from inserts import insert_viewer, add_genre, insert_movie
+from inserts import insert_viewer, add_genre, insert_movie, insert_session
 from deletes import delete_viewer
 
 
@@ -93,9 +93,8 @@ def main():
         url = args[1]
         insert_movie(rid, url)
 
-        
-
-
+    elif function_name == "insertSession":
+        insert_session(*args)
 
     # Add other commands similarly
     else:

@@ -82,7 +82,7 @@ def add_genre(uid, genre):
         # check if user exists
         genres = cursor.fetchone()
         if genres is None:
-            raise ValueError("UID does not exist")
+            raise ValueError("UID does not exist, Fail")
 
         genre_list = genres[0].split(";")
         
@@ -125,3 +125,42 @@ def insert_movie(rid, url):
     connection.commit()
     cursor.close()
     connection.close()
+
+
+def insert_session(*args):
+    """Creates a session for specific viewer"""
+    connection = db_utils.connect_to_cs122a()
+    if not connection:
+        print("Failed to connect to cs122a database.")
+        return
+
+    cursor = connection.cursor()
+
+    sid = args[0]
+    uid = args[1]
+    rid = args[2]
+    ep_num = args[3]
+    init_at = args[4]
+    leave_at = args[5]
+    quality = args[6]
+    device = args[7]
+
+    try:
+
+        create_sesh_query = "INSERT INTO sessions VALUES (%s,%s,%s,%s,%s,%s,%s, %s)"
+        cursor.execute(create_sesh_query, (sid, uid, rid, ep_num, init_at, leave_at, quality, device,))
+        
+        print(f"sid {sid} created")
+        
+    except mysql.connector.IntegrityError as e:
+        print("Duplicate SID provided. Fail")
+
+    connection.commit()
+    cursor.close()
+    connection.close()
+
+
+    
+    
+
+    
