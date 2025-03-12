@@ -45,8 +45,8 @@ def popular_releases(num):
     FROM releases
     JOIN reviews ON reviews.rid = releases.rid
     GROUP BY releases.rid
-    ORDER BY reviewCount DESC, releases.rid;
-    LIMIT %s
+    ORDER BY reviewCount DESC, releases.rid
+    LIMIT %s;
 """
 
     cursor.execute(pop_releases_query, (num,))
