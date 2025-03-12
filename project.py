@@ -4,7 +4,7 @@ import db_utils
 from create_table_query import create_table_query_map
 from inserts import insert_viewer, add_genre, insert_movie, insert_session, update_release
 from deletes import delete_viewer
-from selects import select_releases
+from selects import select_releases, popular_releases
 
 
 
@@ -105,6 +105,10 @@ def main():
     elif function_name == "listReleases":
         uid = args[0]
         select_releases(uid)
+
+    elif function_name == "popularRelease":
+        num = args[0]
+        popular_releases(num)
 
     # Add other commands similarly
     else:
