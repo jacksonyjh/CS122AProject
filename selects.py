@@ -61,3 +61,34 @@ def popular_releases(num):
     cursor.close()
     connection.close()
     return
+
+
+def release_title(sid):
+    connection = db_utils.connect_to_cs122a()
+    if not connection:
+        print("Failed to connect to cs122a database.")
+        return
+
+    cursor = connection.cursor()
+
+    release_title_query = """
+    SELECT releases.rid, releases.title, releases.genre, videos.title, videos.ep_num, videos.length
+    FROM sessions
+    JOIN videos ON sessions.rid = videos.rid AND sessions.ep_num = videos.ep_num
+    JOIN releases ON videos.rid = releases.rid
+    WHERE sessions.sid = %s
+    ORDER BY releases.title ASC;
+"""
+
+    cursor.execute(release_title_query, (sid,))
+    results = cursor.fetchall()
+
+    for row in results:
+        print(row)
+
+    print(f"{sid} releases selected!")
+
+    connection.commit()
+    cursor.close()
+    connection.close()
+    return
