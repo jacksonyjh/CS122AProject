@@ -41,6 +41,7 @@ def popular_releases(num):
 
     cursor = connection.cursor()
 
+    num = int(num)
     pop_releases_query = """
     SELECT releases.rid, releases.title, COUNT(reviews.rvid) AS reviewCount
     FROM releases
