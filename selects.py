@@ -22,9 +22,10 @@ def select_releases(uid):
     results = cursor.fetchall()
 
     for row in results:
-        print(row)
+        print(','.join(map(str, row)))
+        # print(row)
 
-    print(f"{uid}'s releases selected!")
+    # print(f"{uid}'s releases selected!")
 
     connection.commit()
     cursor.close()
@@ -53,9 +54,10 @@ def popular_releases(num):
     results = cursor.fetchall()
 
     for row in results:
-        print(row)
+        print(','.join(map(str, row)))
+        # print(row)
 
-    print(f"top {num} releases selected!")
+    # print(f"top {num} releases selected!")
 
     connection.commit()
     cursor.close()
@@ -71,7 +73,7 @@ def release_title(sid):
 
     cursor = connection.cursor()
 
-    release_title_query = """
+    pop_releases_query = """
     SELECT releases.rid, releases.title, releases.genre, videos.title, videos.ep_num, videos.length
     FROM sessions
     JOIN videos ON sessions.rid = videos.rid AND sessions.ep_num = videos.ep_num
@@ -80,13 +82,14 @@ def release_title(sid):
     ORDER BY releases.title ASC;
 """
 
-    cursor.execute(release_title_query, (sid,))
+    cursor.execute(pop_releases_query, (sid,))
     results = cursor.fetchall()
 
     for row in results:
-        print(row)
+        print(','.join(map(str, row)))
+        # print(row)
 
-    print(f"{sid} releases selected!")
+    # print(f"{sid} releases selected!")
 
     connection.commit()
     cursor.close()

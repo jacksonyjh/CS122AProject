@@ -38,12 +38,12 @@ def load_data(folder_name):
 
         # Delete existing tables 
         cursor.execute(f"DROP TABLE IF EXISTS {table_name}")
-        print(f"Deleted {table_name}")
+        # print(f"Deleted {table_name}")
 
         #Create new tables
         cursor.execute(create_table_query_map[table_name])
 
-        print(f"Created {table_name} table")
+        # print(f"Created {table_name} table")
 
         file_path = os.path.join(folder_name, table_name) + ".csv"
 
@@ -56,7 +56,7 @@ def load_data(folder_name):
                 query = f"INSERT INTO {table_name} VALUES ({','.join(['%s'] * len(values))})"
                 cursor.execute(query, values)
     connection.commit()
-    print("Data import successful.")
+    # print("Data import successful.")
     cursor.close()
     connection.close()
 
