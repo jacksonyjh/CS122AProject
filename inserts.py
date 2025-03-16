@@ -30,12 +30,13 @@ def insert_viewer(*args):
         cursor.execute(users_query, (uid, email, joined_date, nickname, street, city, state, zipcode, genres))
         cursor.execute(viewers_query, (uid, subscription, first_name, last_name))
         
-    
-        print("User added")
-        print("Viewer added")
+        print("Success")
+        # print("User added")
+        # print("Viewer added")
     
     except mysql.connector.IntegrityError as e:
-        print("Fail: Duplicate ID for Users/Viewers")
+        print("Fail")
+        # print("Fail: Duplicate ID for Users/Viewers")
 
 
 
@@ -90,10 +91,11 @@ def add_genre(uid, genre):
         update_genre_query = """UPDATE users SET genres = %s WHERE uid = %s"""
 
         cursor.execute(update_genre_query, (";".join(genre_list), uid,))
-        print("Genres updated!")
+        print("Success")
+        # print("Genres updated!")
     
     except ValueError as e:
-        print(e)
+        print("Fail")
 
     connection.commit()
     cursor.close()
@@ -112,9 +114,11 @@ def insert_movie(rid, url):
     try:
         insert_movie_query = "INSERT INTO movies VALUES (%s, %s)"
         cursor.execute(insert_movie_query, (rid, url,))
-        print(f"added rid {rid}")
+        print("Success")
+        # print(f"added rid {rid}")
     except mysql.connector.IntegrityError as e:
-        print(f"rid {rid} already exists, failed to insert")
+        print("Fail")
+        # print(f"rid {rid} already exists, failed to insert")
     
     connection.commit()
     cursor.close()
@@ -143,11 +147,12 @@ def insert_session(*args):
 
         create_sesh_query = "INSERT INTO sessions VALUES (%s,%s,%s,%s,%s,%s,%s, %s)"
         cursor.execute(create_sesh_query, (sid, uid, rid, ep_num, init_at, leave_at, quality, device,))
-        
-        print(f"sid {sid} created")
+        print("Success")
+        # print(f"sid {sid} created")
 
     except mysql.connector.IntegrityError as e:
-        print("Duplicate SID provided. Fail")
+        print("Fail")
+        # print("Duplicate SID provided. Fail")
 
     connection.commit()
     cursor.close()
@@ -162,12 +167,16 @@ def update_release(rid, title):
         print("Failed to connect to cs122a database.")
         return
 
-    cursor = connection.cursor()
+    try:
+        cursor = connection.cursor()
 
-    update_release_query = "UPDATE releases SET title = %s WHERE rid = %s"
-    cursor.execute(update_release_query, (title, rid,))
+        update_release_query = "UPDATE releases SET title = %s WHERE rid = %s"
+        cursor.execute(update_release_query, (title, rid,))
 
-    print(f"rid {rid} title updated")
+        print("Success")
+        # print(f"rid {rid} title updated")
+    except Exception as e:
+        print("Fail")
 
     connection.commit()
     cursor.close()

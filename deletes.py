@@ -8,11 +8,15 @@ def delete_viewer(uid):
         print("Failed to connect to cs122a database.")
         return
 
-    cursor = connection.cursor()
+    try:
+        cursor = connection.cursor()
 
-    delete_query = """DELETE FROM viewers WHERE uid = %s"""
-    cursor.execute(delete_query, (uid,))
-    print(f"Deleted uid {uid}")
+        delete_query = """DELETE FROM viewers WHERE uid = %s"""
+        cursor.execute(delete_query, (uid,))
+        print("Success")
+    except Exception as e:
+        print("Fail")
+    # print(f"Deleted uid {uid}")
 
     connection.commit()
     cursor.close()
