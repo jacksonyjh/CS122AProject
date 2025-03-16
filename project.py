@@ -29,34 +29,38 @@ def load_data(folder_name):
         print("Failed to connect to cs122a database.")
         return
 
-    cursor = connection.cursor()
+    try:
+        cursor = connection.cursor()
 
-    # Disable foreign key checks to allow dropping tables
-    cursor.execute("SET FOREIGN_KEY_CHECKS = 0;")
-    # Create each table
-    for table_name in table_order:
+        # Disable foreign key checks to allow dropping tables
+        cursor.execute("SET FOREIGN_KEY_CHECKS = 0;")
+        # Create each table
+        for table_name in table_order:
 
-        # Delete existing tables 
-        cursor.execute(f"DROP TABLE IF EXISTS {table_name}")
-        # print(f"Deleted {table_name}")
+            # Delete existing tables 
+            cursor.execute(f"DROP TABLE IF EXISTS {table_name}")
+            # print(f"Deleted {table_name}")
 
-        #Create new tables
-        cursor.execute(create_table_query_map[table_name])
+            #Create new tables
+            cursor.execute(create_table_query_map[table_name])
 
-        # print(f"Created {table_name} table")
+            # print(f"Created {table_name} table")
 
-        file_path = os.path.join(folder_name, table_name) + ".csv"
+            file_path = os.path.join(folder_name, table_name) + ".csv"
 
-        with open(file_path, 'r') as file:
-            # first line is always columns, subsequent rows = data to input
-            columns = file.readline()
-            
-            for line in file:
-                values = line.strip().split(",")
-                query = f"INSERT INTO {table_name} VALUES ({','.join(['%s'] * len(values))})"
-                cursor.execute(query, values)
+            with open(file_path, 'r') as file:
+                # first line is always columns, subsequent rows = data to input
+                columns = file.readline()
+                
+                for line in file:
+                    values = line.strip().split(",")
+                    query = f"INSERT INTO {table_name} VALUES ({','.join(['%s'] * len(values))})"
+                    cursor.execute(query, values)
+        print("Success")
+    except Exception as e:
+        print("Fail")
     connection.commit()
-    # print("Data import successful.")
+        # print("Data import successful.")
     cursor.close()
     connection.close()
 
