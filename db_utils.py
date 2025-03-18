@@ -17,7 +17,7 @@ def initialize_database():
     """Create 122A DB if needed"""
     connection = connect_to_server()
     if not connection:
-        print("Failed to connect to MySQL.")
+        # print("Failed to connect to MySQL.")
         return False
 
     try:
@@ -25,10 +25,10 @@ def initialize_database():
         cursor.execute("CREATE DATABASE IF NOT EXISTS cs122a")
         cursor.close()
         connection.close()
-        print("Database initialized successfully.")
+        # print("Database initialized successfully.")
         return True
     except mysql.connector.Error as err:
-        print(f"Error during database initialization: {err}")
+        # print(f"Error during database initialization: {err}")
         return False
 
 def connect_to_cs122a():

@@ -6,7 +6,7 @@ def delete_viewer(uid):
     connection = db_utils.connect_to_cs122a()
     if not connection:
         print("Failed to connect to cs122a database.")
-        return
+        return False
 
     try:
         cursor = connection.cursor()
@@ -16,9 +16,10 @@ def delete_viewer(uid):
         print("Success")
     except Exception as e:
         print("Fail")
+        return False
     # print(f"Deleted uid {uid}")
 
     connection.commit()
     cursor.close()
     connection.close()
-    return
+    return True

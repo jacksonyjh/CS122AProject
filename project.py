@@ -26,8 +26,8 @@ def load_data(folder_name):
     """Load data into 122A DB"""
     connection = db_utils.connect_to_cs122a()
     if not connection:
-        print("Failed to connect to cs122a database.")
-        return
+        # print("Failed to connect to cs122a database.")
+        return False
 
     try:
         cursor = connection.cursor()
@@ -58,21 +58,23 @@ def load_data(folder_name):
                     cursor.execute(query, values)
         print("Success")
     except Exception as e:
-        print("Fail")
+        # print("Fail")
+        return False
     connection.commit()
         # print("Data import successful.")
     cursor.close()
     connection.close()
+    return True
 
 def main():
     if len(sys.argv) < 2:
         print("No function specified.")
-        return
+        return False
 
     # Initialize the database before running any commands
     if not db_utils.initialize_database():
-        print("Database initialization failed.")
-        return
+        # print("Database initialization failed.")
+        return False
 
     function_name = sys.argv[1]
     args = sys.argv[2:]
@@ -117,6 +119,7 @@ def main():
     elif function_name == "releaseTitle":
         sid = args[0]
         release_title(sid)
+
 
 
 

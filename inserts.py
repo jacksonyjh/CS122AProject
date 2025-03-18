@@ -6,7 +6,7 @@ def insert_viewer(*args):
     connection = db_utils.connect_to_cs122a()
     if not connection:
         print("Failed to connect to cs122a database.")
-        return
+        return False
 
     cursor = connection.cursor()
 
@@ -36,6 +36,7 @@ def insert_viewer(*args):
     
     except mysql.connector.IntegrityError as e:
         print("Fail")
+        return False
         # print("Fail: Duplicate ID for Users/Viewers")
 
 
@@ -58,6 +59,7 @@ def insert_viewer(*args):
     connection.commit()
     cursor.close()
     connection.close()
+    return True
     
     
     
@@ -66,7 +68,7 @@ def add_genre(uid, genre):
     connection = db_utils.connect_to_cs122a()
     if not connection:
         print("Failed to connect to cs122a database.")
-        return
+        return False
 
     cursor = connection.cursor()
 
@@ -96,10 +98,12 @@ def add_genre(uid, genre):
     
     except ValueError as e:
         print("Fail")
+        return False
 
     connection.commit()
     cursor.close()
     connection.close()
+    return True
 
 
 def insert_movie(rid, url):
@@ -107,7 +111,7 @@ def insert_movie(rid, url):
     connection = db_utils.connect_to_cs122a()
     if not connection:
         print("Failed to connect to cs122a database.")
-        return
+        return False
 
     cursor = connection.cursor()
 
@@ -118,11 +122,13 @@ def insert_movie(rid, url):
         # print(f"added rid {rid}")
     except mysql.connector.IntegrityError as e:
         print("Fail")
+        return False
         # print(f"rid {rid} already exists, failed to insert")
     
     connection.commit()
     cursor.close()
     connection.close()
+    return True
 
 
 def insert_session(*args):
@@ -130,7 +136,7 @@ def insert_session(*args):
     connection = db_utils.connect_to_cs122a()
     if not connection:
         print("Failed to connect to cs122a database.")
-        return
+        return False
 
     cursor = connection.cursor()
 
@@ -152,11 +158,13 @@ def insert_session(*args):
 
     except mysql.connector.IntegrityError as e:
         print("Fail")
+        return False
         # print("Duplicate SID provided. Fail")
 
     connection.commit()
     cursor.close()
     connection.close()
+    return True
 
 
     
@@ -165,7 +173,7 @@ def update_release(rid, title):
     connection = db_utils.connect_to_cs122a()
     if not connection:
         print("Failed to connect to cs122a database.")
-        return
+        return False
 
     try:
         cursor = connection.cursor()
@@ -177,9 +185,10 @@ def update_release(rid, title):
         # print(f"rid {rid} title updated")
     except Exception as e:
         print("Fail")
+        return False
 
     connection.commit()
     cursor.close()
     connection.close()
 
-    return
+    return True
