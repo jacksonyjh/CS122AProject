@@ -142,7 +142,7 @@ def videos_viewed(rid):
     videos_viewed_query = """
     SELECT videos.rid, videos.ep_num, videos.title, videos.length, COUNT(DISTINCT sessions.uid) AS unique_viewers
     FROM videos
-    JOIN sessions ON sessions.rid = videos.rid
+    LEFT JOIN sessions ON sessions.rid = videos.rid
     WHERE videos.rid = %s
     GROUP BY videos.rid, videos.ep_num, videos.title, videos.length
     ORDER BY videos.rid DESC
@@ -152,5 +152,6 @@ def videos_viewed(rid):
 
     results = cursor.fetchall()
 
+    
     for row in results:
         print(','.join(map(str, row)))
