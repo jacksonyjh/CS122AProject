@@ -120,9 +120,35 @@ def active_viewer(n, start, end):
     GROUP BY viewers.uid
     HAVING COUNT(sessions.sid) >= %s
     ORDER BY viewers.uid ASC
+    """
 
-# """
     cursor.execute(active_viewer_query, (start, end, n,))
+
+    results = cursor.fetchall()
+
+    for row in results:
+        print(','.join(map(str, row)))
+
+def videos_viewed(rid):
+    """Given Video rid, count number of UNIQUE viewers that have started a session on it
+    Videos not streamed by any viewer have count of 0 instead of NULL"""
+    connection = db_utils.connect_to_cs122a()
+    if not connection:
+        print("Failed to connect to cs122a database.")
+        return
+
+    cursor = connection.cursor()
+
+    videos_viewed_query = """
+    SELECT videos.rid, videos.ep_num, videos.title, videos.length, COUNT(DISTINCT sessions.uid) AS unique_viewers
+    FROM videos
+    JOIN sessions ON sessions.rid = videos.rid
+    WHERE videos.rid = %s
+    GROUP BY videos.rid, videos.ep_num, videos.title, videos.length
+    ORDER BY videos.rid DESC
+    """
+
+    cursor.execute(videos_viewed_query, (rid, ))
 
     results = cursor.fetchall()
 
