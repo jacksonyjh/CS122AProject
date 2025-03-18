@@ -4,7 +4,7 @@ import db_utils
 from create_table_query import create_table_query_map
 from inserts import insert_viewer, add_genre, insert_movie, insert_session, update_release
 from deletes import delete_viewer
-from selects import select_releases, popular_releases, release_title
+from selects import select_releases, popular_releases, release_title, active_viewer
 
 
 
@@ -119,6 +119,11 @@ def main():
     elif function_name == "releaseTitle":
         sid = args[0]
         release_title(sid)
+    elif function_name == "activeViewer":
+        n = args[0]
+        start = args[1]
+        end = args[2]
+        active_viewer(n, start, end)
 
 
 

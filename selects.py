@@ -96,3 +96,35 @@ def release_title(sid):
     cursor.close()
     connection.close()
     return
+
+def active_viewer(n, start, end):
+    """Returns all active viewers that have started a session more than n times for a time range,
+    in ASC order of uid"""
+    connection = db_utils.connect_to_cs122a()
+    if not connection:
+        print("Failed to connect to cs122a database.")
+        return
+
+    cursor = connection.cursor()
+
+    # n = int(n)
+    # print(n)
+    # print(start)
+    # print(end)
+
+    active_viewer_query = """
+    SELECT viewers.uid, viewers.first_name, viewers.last_name
+    FROM viewers
+    JOIN sessions ON sessions.uid = viewers.uid
+    WHERE sessions.initiate_at >= %s AND sessions.leave_at <= %s
+    GROUP BY viewers.uid
+    HAVING COUNT(sessions.sid) >= %s
+    ORDER BY viewers.uid ASC
+
+# """
+    cursor.execute(active_viewer_query, (start, end, n,))
+
+    results = cursor.fetchall()
+
+    for row in results:
+        print(','.join(map(str, row)))
