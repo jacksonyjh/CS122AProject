@@ -4,9 +4,7 @@ import db_utils
 from create_table_query import create_table_query_map
 from inserts import insert_viewer, add_genre, insert_movie, insert_session, update_release
 from deletes import delete_viewer
-from selects import select_releases, popular_releases, release_title, active_viewer, videos_viewed
-
-
+from selects import list_releases, popular_releases, release_title, active_viewer, videos_viewed
 
 
 table_order = [
@@ -22,6 +20,7 @@ table_order = [
     ]
 
 
+# 1
 def load_data(folder_name):
     """Load data into 122A DB"""
     connection = db_utils.connect_to_cs122a()
@@ -56,14 +55,15 @@ def load_data(folder_name):
                     values = line.strip().split(",")
                     query = f"INSERT INTO {table_name} VALUES ({','.join(['%s'] * len(values))})"
                     cursor.execute(query, values)
-        print("Success")
+
     except Exception as e:
-        # print("Fail")
+        print("Fail")
         return False
     connection.commit()
         # print("Data import successful.")
     cursor.close()
     connection.close()
+    print("Success")
     return True
 
 def main():
@@ -110,7 +110,7 @@ def main():
 
     elif function_name == "listReleases":
         uid = args[0]
-        select_releases(uid)
+        list_releases(uid)
 
     elif function_name == "popularRelease":
         num = args[0]

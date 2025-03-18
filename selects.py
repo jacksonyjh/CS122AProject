@@ -1,7 +1,8 @@
 import db_utils
 import mysql.connector
 
-def select_releases(uid):
+# 8 
+def list_releases(uid):
     """Given UID, list releases the viewer has reviewed, in ASC order of titles"""
     connection = db_utils.connect_to_cs122a()
     if not connection:
@@ -32,11 +33,11 @@ def select_releases(uid):
     connection.close()
     return
 
-
+# 9
 def popular_releases(num):
     connection = db_utils.connect_to_cs122a()
     if not connection:
-        print("Failed to connect to cs122a database.")
+        print("Fail")
         return
 
     cursor = connection.cursor()
@@ -65,11 +66,11 @@ def popular_releases(num):
     connection.close()
     return
 
-
+# 10
 def release_title(sid):
     connection = db_utils.connect_to_cs122a()
     if not connection:
-        print("Failed to connect to cs122a database.")
+        print("Fail")
         return
 
     cursor = connection.cursor()
@@ -97,12 +98,13 @@ def release_title(sid):
     connection.close()
     return
 
+# 11
 def active_viewer(n, start, end):
     """Returns all active viewers that have started a session more than n times for a time range,
     in ASC order of uid"""
     connection = db_utils.connect_to_cs122a()
     if not connection:
-        print("Failed to connect to cs122a database.")
+        print("Fail")
         return
 
     cursor = connection.cursor()
@@ -129,12 +131,13 @@ def active_viewer(n, start, end):
     for row in results:
         print(','.join(map(str, row)))
 
+# 12
 def videos_viewed(rid):
     """Given Video rid, count number of UNIQUE viewers that have started a session on it
     Videos not streamed by any viewer have count of 0 instead of NULL"""
     connection = db_utils.connect_to_cs122a()
     if not connection:
-        print("Failed to connect to cs122a database.")
+        print("Fail")
         return
 
     cursor = connection.cursor()

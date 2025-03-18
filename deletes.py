@@ -1,6 +1,7 @@
 import db_utils
 import mysql.connector
 
+# 4
 def delete_viewer(uid):
     """Deletes a Viewer from Viewer Table"""
     connection = db_utils.connect_to_cs122a()

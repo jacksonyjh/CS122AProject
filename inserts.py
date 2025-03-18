@@ -1,11 +1,12 @@
 import db_utils
 import mysql.connector
 
+# 2
 def insert_viewer(*args):
     """Inserts a User and Viewer into their respective tables"""
     connection = db_utils.connect_to_cs122a()
     if not connection:
-        print("Failed to connect to cs122a database.")
+        print("Fail")
         return False
 
     cursor = connection.cursor()
@@ -29,15 +30,12 @@ def insert_viewer(*args):
         viewers_query = """INSERT INTO viewers VALUES (%s, %s, %s, %s)"""
         cursor.execute(users_query, (uid, email, joined_date, nickname, street, city, state, zipcode, genres))
         cursor.execute(viewers_query, (uid, subscription, first_name, last_name))
-        
-        print("Success")
-        # print("User added")
-        # print("Viewer added")
+
+
     
     except mysql.connector.IntegrityError as e:
         print("Fail")
         return False
-        # print("Fail: Duplicate ID for Users/Viewers")
 
 
 
@@ -59,15 +57,17 @@ def insert_viewer(*args):
     connection.commit()
     cursor.close()
     connection.close()
+    print("Success")
     return True
     
     
-    
+
+# 3
 def add_genre(uid, genre):
     """Adds a genre to a User's genre list"""
     connection = db_utils.connect_to_cs122a()
     if not connection:
-        print("Failed to connect to cs122a database.")
+        print("Fail")
         return False
 
     cursor = connection.cursor()
@@ -93,8 +93,6 @@ def add_genre(uid, genre):
         update_genre_query = """UPDATE users SET genres = %s WHERE uid = %s"""
 
         cursor.execute(update_genre_query, (";".join(genre_list), uid,))
-        print("Success")
-        # print("Genres updated!")
     
     except ValueError as e:
         print("Fail")
@@ -103,14 +101,15 @@ def add_genre(uid, genre):
     connection.commit()
     cursor.close()
     connection.close()
+    print("Success")
     return True
 
-
+# 5
 def insert_movie(rid, url):
     """Inserts Movie into Movies Table"""
     connection = db_utils.connect_to_cs122a()
     if not connection:
-        print("Failed to connect to cs122a database.")
+        print("Fail")
         return False
 
     cursor = connection.cursor()
@@ -118,7 +117,7 @@ def insert_movie(rid, url):
     try:
         insert_movie_query = "INSERT INTO movies VALUES (%s, %s)"
         cursor.execute(insert_movie_query, (rid, url,))
-        print("Success")
+
         # print(f"added rid {rid}")
     except mysql.connector.IntegrityError as e:
         print("Fail")
@@ -128,14 +127,15 @@ def insert_movie(rid, url):
     connection.commit()
     cursor.close()
     connection.close()
+    print("Success")
     return True
 
-
+# 6
 def insert_session(*args):
     """Creates a session for specific viewer"""
     connection = db_utils.connect_to_cs122a()
     if not connection:
-        print("Failed to connect to cs122a database.")
+        print("Fail")
         return False
 
     cursor = connection.cursor()
@@ -150,12 +150,8 @@ def insert_session(*args):
     device = args[7]
 
     try:
-
         create_sesh_query = "INSERT INTO sessions VALUES (%s,%s,%s,%s,%s,%s,%s, %s)"
         cursor.execute(create_sesh_query, (sid, uid, rid, ep_num, init_at, leave_at, quality, device,))
-        print("Success")
-        # print(f"sid {sid} created")
-
     except mysql.connector.IntegrityError as e:
         print("Fail")
         return False
@@ -164,15 +160,16 @@ def insert_session(*args):
     connection.commit()
     cursor.close()
     connection.close()
+    print("Success")
     return True
 
 
-    
+# 7
 def update_release(rid, title):
     """Updates the Title of a Release"""
     connection = db_utils.connect_to_cs122a()
     if not connection:
-        print("Failed to connect to cs122a database.")
+        print("Fail")
         return False
 
     try:
@@ -180,9 +177,8 @@ def update_release(rid, title):
 
         update_release_query = "UPDATE releases SET title = %s WHERE rid = %s"
         cursor.execute(update_release_query, (title, rid,))
-
-        print("Success")
         # print(f"rid {rid} title updated")
+        
     except Exception as e:
         print("Fail")
         return False
@@ -190,5 +186,5 @@ def update_release(rid, title):
     connection.commit()
     cursor.close()
     connection.close()
-
+    print("Success")
     return True
